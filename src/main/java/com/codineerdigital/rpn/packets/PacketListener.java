@@ -1,7 +1,6 @@
 package com.codineerdigital.rpn.packets;
 
 import com.codineerdigital.rpn.server.ClientHandler;
-import com.sun.istack.internal.Nullable;
 
 public interface PacketListener {
 
@@ -11,6 +10,6 @@ public interface PacketListener {
      * @param host The host that send the packet.
      * @param handler the ClientHandler that triggered the listener. ONLY SERVERSIDE!
      */
-    void packetReceived(Packet packet, String host, @Nullable ClientHandler handler);
+    void packetReceived(Packet packet, String host, ClientHandler handler);
 
 }
