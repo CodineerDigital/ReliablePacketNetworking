@@ -10,12 +10,30 @@ import java.util.List;
 
 public class PacketServer {
 
+    /**
+     * The socket of the PacketServer.
+     */
     private ServerSocket serverSocket;
+    /**
+     * The thread that is being executed on application shutdown.
+     */
     private final Thread shutdownThread;
+    /**
+     * Defines if the server is supposed to be shut down.
+     */
     private boolean shutdown;
+    /**
+     * The listeners that are being triggered when packets are coming in.
+     */
     private final List<PacketListener> listeners;
+    /**
+     * The parser that is parsing the incoming packets.
+     */
     private PacketParser parser;
 
+    /**
+     * The constructor of the Packet Server.
+     */
     public PacketServer() {
         this.shutdownThread = new Thread(() -> {
             try {
@@ -28,7 +46,11 @@ public class PacketServer {
         listeners = new ArrayList<>();
     }
 
-    public void start(int port) {
+    /**
+     * Start the Packet Server.
+     * @param port The port the server should run on.
+     */
+    public void start(final int port) {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -47,31 +69,57 @@ public class PacketServer {
         }
     }
 
+    /**
+     * Stop the Packet Server.
+     */
     public void stop() {
         Runtime.getRuntime().removeShutdownHook(shutdownThread);
         shutdown = true;
     }
 
-    public void registerListener(PacketListener listener) {
+    /**
+     * Register a new packet listener.
+     * @param listener The listener to be registered.
+     */
+    public void registerListener(final PacketListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Unregisters an already registered listener.
+     * @param listener The listener to be unregistered.
+     */
     public void unregisterListener(PacketListener listener) {
         listeners.remove(listener);
     }
 
+    /**
+     * Get the currently registered PacketListeners.
+     * @return A list of all currently registered Listeners.
+     */
     public List<PacketListener> getListeners() {
         return listeners;
     }
 
+    /**
+     * Register the PacketParser to enable custom parsed packets.
+     * @param parser The parser to be registered.
+     */
     public void registerParser(PacketParser parser) {
         this.parser = parser;
     }
 
+    /**
+     * Unregister the PacketParser to fallback to default packet handling.
+     */
     public void unregisterParser() {
         this.parser = null;
     }
 
+    /**
+     * Get the currently active parser.
+     * @return The parser or null if not registered.
+     */
     public PacketParser getParser() {
         return parser;
     }
