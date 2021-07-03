@@ -51,18 +51,14 @@ public class ClientHandler extends Thread {
             String input;
             while ((input = in.readLine()) != null) {
                 String[] parts = input.split("\u3000");
-                if (parentServer.getParser() != null) {
-                    for (PacketListener listener : parentServer.getListeners()) {
+                for (PacketListener listener : parentServer.getListeners()) {
+                    if (parentServer.getParser() != null) {
                         listener.packetReceived(parentServer.getParser().parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
                                 clientSocket.getRemoteSocketAddress().toString().split("/")[1]),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1],
-                                this);
-                    }
-                } else {
-                    for (PacketListener listener : parentServer.getListeners()) {
+                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], this);
+                    } else {
                         listener.packetReceived(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1],
-                                this);
+                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], this);
                     }
                 }
             }

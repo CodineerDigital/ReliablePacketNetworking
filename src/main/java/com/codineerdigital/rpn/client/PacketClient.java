@@ -73,19 +73,14 @@ public class PacketClient extends Thread {
             String input;
             while ((input = in.readLine()) != null) {
                 String[] parts = input.split("\u3000");
-                if (parser != null) {
-                    for (PacketListener listener : listeners) {
-                        listener.packetReceived(parser.parsePacket(
-                                new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
+                for (PacketListener listener : getListeners()) {
+                    if (parser != null) {
+                        listener.packetReceived(parser.parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
                                 clientSocket.getRemoteSocketAddress().toString().split("/")[1]),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1],
-                                null);
-                    }
-                } else {
-                    for (PacketListener listener : listeners) {
+                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
+                    } else {
                         listener.packetReceived(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1],
-                                null);
+                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
                     }
                 }
             }
