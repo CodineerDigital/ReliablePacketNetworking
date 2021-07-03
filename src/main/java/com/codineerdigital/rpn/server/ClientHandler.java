@@ -12,16 +12,36 @@ import java.util.Arrays;
 
 public class ClientHandler extends Thread {
 
+    /**
+     * The socket handling the connection to the client.
+     */
     private final Socket clientSocket;
+    /**
+     * The PacketServer controlling this handler.
+     */
     private final PacketServer parentServer;
+    /**
+     * The OutputStream used to send packets to the client.
+     */
     private PrintWriter out;
+    /**
+     * The InputStream used to receive packets from the client.
+     */
     private BufferedReader in;
 
-    public ClientHandler(Socket clientSocket, PacketServer parentServer) {
+    /**
+     * Initialisation of the ClientHandler.
+     * @param clientSocket the Socket used for the client communication.
+     * @param parentServer the PacketServer controlling this handler.
+     */
+    public ClientHandler(final Socket clientSocket, final PacketServer parentServer) {
         this.clientSocket = clientSocket;
         this.parentServer = parentServer;
     }
 
+    /**
+     * The method containing all the packet handling.
+     */
     @Override
     public void run() {
         try {
@@ -54,10 +74,17 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public void sendPacket(Packet packet) {
+    /**
+     * Send a packet to the Client.
+     * @param packet the packet to be send.
+     */
+    public void sendPacket(final Packet packet) {
         out.println(packet.uniqueIdentifier + "\u3000" + String.join("\u3000", packet.arguments));
     }
 
+    /**
+     * Close the connection to the client.
+     */
     public void close() {
         try {
             in.close();
