@@ -2,6 +2,7 @@ package com.codineerdigital.rpn.server;
 
 import com.codineerdigital.rpn.packets.PacketListener;
 import com.codineerdigital.rpn.packets.PacketParser;
+import com.codineerdigital.rpn.packets.PacketValidator;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -27,6 +28,10 @@ public class PacketServer {
      */
     private final List<PacketListener> listeners;
     /**
+     * A list of all PacketValidators that have been registered for this server.
+     */
+    private final List<PacketValidator> validators;
+    /**
      * The parser that is parsing the incoming packets.
      */
     private PacketParser parser;
@@ -44,6 +49,7 @@ public class PacketServer {
         });
         this.shutdown = false;
         listeners = new ArrayList<>();
+        validators = new ArrayList<>();
     }
 
     /**
@@ -122,5 +128,29 @@ public class PacketServer {
      */
     public PacketParser getParser() {
         return parser;
+    }
+
+    /**
+     * Register a PacketValidator to the server.
+     * @param validator the Validator to be registered.
+     */
+    public void registerPacketValidator(final PacketValidator validator) {
+        this.validators.add(validator);
+    }
+
+    /**
+     * Unregister a PacketValidator to the server.
+     * @param validator the Validator to be unregistered.
+     */
+    public void unregisterPacketValidator(final PacketValidator validator) {
+        this.validators.remove(validator);
+    }
+
+    /**
+     * Get the currently registered Packet Validators.
+     * @return The list of all registered Packet Validators.
+     */
+    public List<PacketValidator> getValidators() {
+        return validators;
     }
 }
