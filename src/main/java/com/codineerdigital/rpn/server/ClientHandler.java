@@ -50,7 +50,7 @@ public class ClientHandler extends Thread {
 
             String input;
             while ((input = in.readLine()) != null) {
-                String[] parts = input.split("\u3000");
+                String[] parts = input.split("\u0001");
                 for (PacketListener listener : parentServer.getListeners()) {
                     if (parentServer.getParser() != null) {
                         listener.packetReceived(parentServer.getParser().parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
