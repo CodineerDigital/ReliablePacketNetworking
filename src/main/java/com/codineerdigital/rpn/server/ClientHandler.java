@@ -75,7 +75,7 @@ public class ClientHandler extends Thread {
      * @param packet the packet to be send.
      */
     public void sendPacket(final Packet packet) {
-        out.println(packet.uniqueIdentifier + "\u3000" + String.join("\u3000", packet.arguments));
+        out.println(packet.uniqueIdentifier + "\u0001" + String.join("\u0001", packet.arguments));
     }
 
     /**
