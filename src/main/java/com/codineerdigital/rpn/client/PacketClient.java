@@ -3,6 +3,7 @@ package com.codineerdigital.rpn.client;
 import com.codineerdigital.rpn.packets.Packet;
 import com.codineerdigital.rpn.packets.PacketListener;
 import com.codineerdigital.rpn.packets.PacketParser;
+import com.codineerdigital.rpn.packets.PacketValidator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,9 +29,13 @@ public class PacketClient extends Thread {
      */
     private BufferedReader in;
     /**
-     * A list of all the listeners that has been registered for this client.
+     * A list of all the listeners that have been registered for this client.
      */
     private final List<PacketListener> listeners;
+    /**
+     * A list of all PacketValidators that have been registered for this client.
+     */
+    private final List<PacketValidator> validators;
     /**
      * The PacketParser that is used to parse custom packet definitions.
      */
@@ -41,6 +46,7 @@ public class PacketClient extends Thread {
      */
     public PacketClient() {
         listeners = new ArrayList<>();
+        validators = new ArrayList<>();
     }
 
     /**
@@ -71,17 +77,28 @@ public class PacketClient extends Thread {
     public void run() {
         try {
             String input;
+            boolean valid = true;
             while ((input = in.readLine()) != null) {
                 String[] parts = input.split("\u0001");
-                for (PacketListener listener : getListeners()) {
-                    if (parser != null) {
-                        listener.packetReceived(parser.parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1]),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
-                    } else {
-                        listener.packetReceived(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
+                Packet packet;
+                if (parser != null) {
+                    packet = parser.parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
+                            clientSocket.getRemoteSocketAddress().toString().split("/")[1]);
+                } else {
+                    packet = new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
+                }
+                for (PacketValidator validator : validators) {
+                    valid = validator.validatePacket(packet);
+                    if (!valid) {
+                        System.out.println("Received invalid packet from " + clientSocket.getRemoteSocketAddress().toString() + "! RAW: " + input);
                     }
+                }
+                if (!valid) {
+                    continue;
+                }
+                for (PacketListener listener : listeners) {
+                    listener.packetReceived(packet,
+                            clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
                 }
             }
 
@@ -162,4 +179,27 @@ public class PacketClient extends Thread {
         return parser;
     }
 
+    /**
+     * Register a PacketValidator to the client.
+     * @param validator the Validator to be registered.
+     */
+    public void registerPacketValidator(final PacketValidator validator) {
+        this.validators.add(validator);
+    }
+
+    /**
+     * Unregister a PacketValidator to the client.
+     * @param validator the Validator to be unregistered.
+     */
+    public void unregisterPacketValidator(final PacketValidator validator) {
+        this.validators.remove(validator);
+    }
+
+    /**
+     * Get the currently registered Packet Validators.
+     * @return The list of all registered Packet Validators.
+     */
+    public List<PacketValidator> getValidators() {
+        return validators;
+    }
 }

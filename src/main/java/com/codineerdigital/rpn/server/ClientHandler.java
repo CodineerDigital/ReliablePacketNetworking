@@ -2,6 +2,7 @@ package com.codineerdigital.rpn.server;
 
 import com.codineerdigital.rpn.packets.Packet;
 import com.codineerdigital.rpn.packets.PacketListener;
+import com.codineerdigital.rpn.packets.PacketValidator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,17 +50,28 @@ public class ClientHandler extends Thread {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             String input;
+            boolean valid = true;
             while ((input = in.readLine()) != null) {
                 String[] parts = input.split("\u0001");
-                for (PacketListener listener : parentServer.getListeners()) {
-                    if (parentServer.getParser() != null) {
-                        listener.packetReceived(parentServer.getParser().parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1]),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], this);
-                    } else {
-                        listener.packetReceived(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
-                                clientSocket.getRemoteSocketAddress().toString().split("/")[1], this);
+                Packet packet;
+                if (parentServer.getParser() != null) {
+                    packet = parentServer.getParser().parsePacket(new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length)),
+                            clientSocket.getRemoteSocketAddress().toString().split("/")[1]);
+                } else {
+                    packet = new Packet(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
+                }
+                for (PacketValidator validator : parentServer.getValidators()) {
+                    valid = validator.validatePacket(packet);
+                    if (!valid) {
+                        System.out.println("Received invalid packet from " + clientSocket.getRemoteSocketAddress().toString() + "! RAW: " + input);
                     }
+                }
+                if (!valid) {
+                    continue;
+                }
+                for (PacketListener listener : parentServer.getListeners()) {
+                    listener.packetReceived(packet,
+                            clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
                 }
             }
 
