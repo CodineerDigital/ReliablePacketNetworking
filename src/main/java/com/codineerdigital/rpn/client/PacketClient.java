@@ -53,21 +53,14 @@ public class PacketClient extends Thread {
      * Connect to a server.
      * @param host The remote servers host address.
      * @param port The remote servers port.
+     * @throws IOException exception thrown if connection fails.
      */
-    public void connect(final String host, final int port) {
-        try {
+    public void connect(final String host, final int port) throws IOException {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
-
             this.start();
-
-        } catch (IOException e) {
-            System.out.println("Failed to connect to PacketServer at "
-                    + host + ":" + port);
-            e.printStackTrace();
-        }
     }
 
     /**
