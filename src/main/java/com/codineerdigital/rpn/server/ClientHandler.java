@@ -71,7 +71,7 @@ public class ClientHandler extends Thread {
                 }
                 for (PacketListener listener : parentServer.getListeners()) {
                     listener.packetReceived(packet,
-                            clientSocket.getRemoteSocketAddress().toString().split("/")[1], null);
+                            clientSocket.getRemoteSocketAddress().toString().split("/")[1], this);
                 }
             }
 
