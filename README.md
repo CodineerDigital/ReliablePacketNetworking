@@ -56,10 +56,21 @@ public class ExampleListener implements PacketListener {
 }
 ```
 
+# Protocol
+The protocol in Reliable Packet Networking is the way packets are constructed and is comparable to a standard for packets that guarantees communication between each client/server with identical protocol version. Because of this compatibility aspect, the protocol version should be changed as rarely as possible. The current protocol version is 2 and applies to RPN version 1.0.1 or later.
+## Protocol Versions
+| Protocol Version | RPN Versions |
+| ------ | ------ |
+| 1 | 1.0 |
+| 2 | 1.0.1+ |
+
 # FAQ
 <details><summary>Which Java version is required?</summary>
 The library requires Java 8 or newer.
 </details>
 <details><summary>Is there a maven/gradle dependency I can use?</summary>
 Yes, you can find the maven/gradle dependency here: https://gitlab.codineerdigital.com/public-content/reliablepacketnetworking/-/packages/1
+</details>
+<details><summary>Can client and server with different Protocol versions work together?</summary>
+Theoretically yes, but not by default. You would need a custom protocol implementation or a custom Packet Parser that is doing the changes.
 </details>
