@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.codineerdigital</groupId>
-    <artifactId>ReliablePacketNetworking</artifactId>
+    <artifactId>reliablepacketnetworking</artifactId>
     <version>1.0.3-SNAPSHOT</version>
 
     <properties>
@@ -22,15 +22,10 @@
     </repositories>
     <distributionManagement>
         <repository>
-            <id>gitlab-maven</id>
-            <!--suppress UnresolvedMavenProperty -->
-            <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+            <id>github</id>
+            <name>GitHub CodineerDigital Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/CodineerDigital/ReliablePacketNetworking</url>
         </repository>
-        <snapshotRepository>
-            <id>gitlab-maven</id>
-            <!--suppress UnresolvedMavenProperty -->
-            <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-        </snapshotRepository>
     </distributionManagement>
 
 
