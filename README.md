@@ -69,7 +69,7 @@ The protocol in Reliable Packet Networking is the way packets are constructed an
 The library requires Java 8 or newer.
 </details>
 <details><summary>Is there a maven/gradle dependency I can use?</summary>
-Yes, you can find the maven/gradle dependency here: https://gitlab.codineerdigital.com/public-content/reliablepacketnetworking/-/packages/1
+Yes, you can find the maven/gradle dependency here: https://github.com/orgs/CodineerDigital/packages?repo_name=ReliablePacketNetworking
 </details>
 <details><summary>Can client and server with different Protocol versions work together?</summary>
 Theoretically yes, but not by default. You would need a custom protocol implementation or a custom Packet Parser that is doing the changes.
